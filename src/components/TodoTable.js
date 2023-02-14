@@ -5,7 +5,7 @@ import { ErrorMsgContainer } from "../utils/StyledContainer";
 import { useDispatch } from "react-redux";
 import { deleteTodo } from "../reduxToolkit/feature/todoSlice";
 
-const TodoTable = ({ todos }) => {
+const TodoTable = ({ todos, handleEdit }) => {
 
     const dispatch = useDispatch();
 
@@ -32,14 +32,14 @@ const TodoTable = ({ todos }) => {
         <tbody>
           {todos &&
             todos.map((todo, index) => (
-              <tr>
+              <tr key={todo.id} >
                 <td>{index + 1}</td>
                 <td>{todo.todoText}</td>
                 <td>{new Date(todo.createdAt).toLocaleString()}</td>
                 <td>
                     <div className="action_icons" >
                     <AiFillEdit
-                        
+                        onClick={()=>handleEdit(todo)}
                     />
                     <AiTwotoneDelete
                         onClick={()=>deleteTask(todo.id)}

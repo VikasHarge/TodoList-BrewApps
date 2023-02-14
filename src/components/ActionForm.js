@@ -7,23 +7,34 @@ import {
 } from "../utils/StyledContainer";
 import { v4 as uuidv4 } from "uuid";
 import { useDispatch, useSelector } from "react-redux";
-import { addTodo } from "../reduxToolkit/feature/todoSlice";
+import { addTodo, editTodoAction } from "../reduxToolkit/feature/todoSlice";
 import { toast } from "react-toastify";
 import TodoTable from "./TodoTable";
 
 const ActionForm = () => {
+
+    const dispatch = useDispatch();
+    const todos  = useSelector((state)=>state.todos)
+
   const [todoText, setTodoText] = useState("");
   const [displayTodo, setDisplayTodos]=useState([])
-  const dispatch = useDispatch();
-  const todos  = useSelector((state)=>state.todos)
-
   const [searchBy, setSearchBy]= useState(null);
   const [searchQry, setSearchQry] = useState('')
+  const [editing, setEditing] = useState(false)
+  const [editTodo, setEditTodo] = useState('')
+  const [editTodoText, setEditTodoText] = useState('')
+
 
 
   useEffect(()=>{
     setDisplayTodos(todos);
   },[todos])
+
+  const handleEdit = (todo)=>{
+    setEditing(true);
+    setEditTodo(todo)
+    setEditTodoText(todo.todoText)
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -44,6 +55,24 @@ const ActionForm = () => {
     setTodoText("");
   };
 
+  const editSubmit = (e)=>{
+    e.preventDefault();
+
+    if (editTodoText === "") {
+        toast.warn("todo value can't be empty");
+        return;
+    }
+
+    let editedTodoObject = {
+        id : editTodo.id,
+        todoText : editTodoText,
+        completed : false,
+    }
+
+    dispatch(editTodoAction(editedTodoObject));
+    setEditing(false)
+  }
+
   useEffect(()=>{
     console.log(searchBy);
   },[searchBy])
@@ -51,7 +80,7 @@ const ActionForm = () => {
   return (
     <StyledContainer>
       <ActionContainer>
-        {true ? (
+        {!editing ? (
           <>
             <Form onSubmit={handleSubmit}>
               <label>Add ToDo to your List</label>
@@ -68,26 +97,7 @@ const ActionForm = () => {
                 </StyledBtn>
               </div>
             </Form>
-          </>
-        ) : (
-          <>
-            <Form>
-              <label>Update ToDo</label>
-              <div className="input_Container">
-                <StyledInput
-                  width="80%"
-                  placeholder="Update task"
-                  value={todoText}
-                  onChange={(e) => setTodoText(e.target.value)}
-                ></StyledInput>
-                <StyledBtn backgroundColor="#ffa500" type="submit">
-                  UPDATE
-                </StyledBtn>
-              </div>
-            </Form>
-          </>
-        )}
-        <div className="search_todos" >
+            <div className="search_todos" >
             <label htmlFor="search" >Search By</label>
             <select name="search" id="search" value={searchBy || ''} onChange={(e)=>setSearchBy(e.target.value)}  >
                 <option value='' >select...</option>
@@ -109,8 +119,32 @@ const ActionForm = () => {
             }
             </div>
         </div>
+          </>
+        ) : (
+          <>
+            <Form onSubmit={editSubmit} >
+              <label>Update ToDo</label>
+              <div className="input_Container">
+                <StyledInput
+                  width="80%"
+                  placeholder="Update task"
+                  value={editTodoText}
+                  onChange={(e) => setEditTodoText(e.target.value)}
+                ></StyledInput>
+                <StyledBtn backgroundColor="#ffa500" type="submit">
+                  UPDATE
+                </StyledBtn>
+                <StyledBtn
+                    onClick={()=>setEditing(false)}
+                >
+                    Cancle
+                </StyledBtn>
+              </div>
+            </Form>
+          </>
+        )}
       </ActionContainer>
-      <TodoTable todos={displayTodo} />
+      <TodoTable todos={displayTodo}  handleEdit={handleEdit} />
     </StyledContainer>
   );
 };
