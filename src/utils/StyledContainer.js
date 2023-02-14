@@ -44,3 +44,19 @@ export const StyledBtn = styled.button`
         border-color : ${(props)=>props.backgroundColor || "#black"} !important;
     }
 `
+
+export const ErrorMsgContainer = styled.div`
+    width : 100%;
+    height : 30vh;
+    display : flex;
+    justify-content : center;
+    align-items : center;
+    h1{
+        font-size : 1rem;
+        padding : 0.5rem 1rem;
+        border : 1px solid ;
+        border-color : ${(props)=>(props.color || "red")};
+        color : ${(props)=>props.color || "red"};
+        border-radius : 6px;
+    }
+`

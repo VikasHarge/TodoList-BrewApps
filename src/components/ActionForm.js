@@ -6,17 +6,24 @@ import {
   StyledInput,
 } from "../utils/StyledContainer";
 import { v4 as uuidv4 } from "uuid";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addTodo } from "../reduxToolkit/feature/todoSlice";
 import { toast } from "react-toastify";
 import TodoTable from "./TodoTable";
 
 const ActionForm = () => {
   const [todoText, setTodoText] = useState("");
+  const [displayTodo, setDisplayTodos]=useState([])
   const dispatch = useDispatch();
+  const todos  = useSelector((state)=>state.todos)
 
   const [searchBy, setSearchBy]= useState(null);
   const [searchQry, setSearchQry] = useState('')
+
+
+  useEffect(()=>{
+    setDisplayTodos(todos);
+  },[todos])
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -103,7 +110,7 @@ const ActionForm = () => {
             </div>
         </div>
       </ActionContainer>
-      <TodoTable />
+      <TodoTable todos={displayTodo} />
     </StyledContainer>
   );
 };

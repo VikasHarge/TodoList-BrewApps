@@ -10,10 +10,14 @@ const todoSlice = createSlice({
             state.push(action.payload);
             toast.success("Todo Added to your list")
         },
+        deleteTodo : (state, action)=>{
+            toast.error("Task Deleted")
+            return state.filter((todo)=> todo.id !== action.payload)
+        }
         
     }
 })
 
-export const {addTodo} = todoSlice.actions;
+export const {addTodo, deleteTodo} = todoSlice.actions;
 
 export default todoSlice.reducer;
