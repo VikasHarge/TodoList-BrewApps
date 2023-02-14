@@ -1,60 +1,60 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
-import {AiFillEdit, AiTwotoneDelete} from 'react-icons/ai'
+import { AiFillEdit, AiTwotoneDelete } from "react-icons/ai";
+import {IoCheckmarkDoneCircleSharp} from 'react-icons/io5'
 import { ErrorMsgContainer } from "../utils/StyledContainer";
 import { useDispatch } from "react-redux";
-import { deleteTodo } from "../reduxToolkit/feature/todoSlice";
+import { completeTodo, deleteTodo } from "../reduxToolkit/feature/todoSlice";
 
 const TodoTable = ({ todos, handleEdit }) => {
+  const dispatch = useDispatch();
 
-    const dispatch = useDispatch();
-
-
-    const deleteTask = (id)=>{
-
-        dispatch(deleteTodo(id))
-
-    }
+  const deleteTask = (id) => {
+    dispatch(deleteTodo(id));
+  };
 
   return (
     <>
-    {
-        todos.length > 0 ? <>
-              <StyledTable>
-        <thead>
-          <tr>
-            <th>Sr No</th>
-            <th>Task Name</th>
-            <th>Created at</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {todos &&
-            todos.map((todo, index) => (
-              <tr key={todo.id} >
-                <td>{index + 1}</td>
-                <td>{todo.todoText}</td>
-                <td>{new Date(todo.createdAt).toLocaleString()}</td>
-                <td>
-                    <div className="action_icons" >
-                    <AiFillEdit
-                        onClick={()=>handleEdit(todo)}
-                    />
-                    <AiTwotoneDelete
-                        onClick={()=>deleteTask(todo.id)}
-                    />
-                    </div>
-                </td>
+      {todos.length > 0 ? (
+        <>
+          <StyledTable>
+            <thead>
+              <tr>
+                <th>Sr No</th>
+                <th>Task Name</th>
+                <th>Created at</th>
+                <th>Actions</th>
               </tr>
-            ))}
-        </tbody>
-      </StyledTable></> : <>
-      <ErrorMsgContainer color="orange" >
-        <h1>No Task added yet, please add task</h1>
-      </ErrorMsgContainer>
-      </>
-    }
+            </thead>
+            <tbody>
+              {todos &&
+                todos.map((todo, index) => (
+                  <tr key={todo.id}>
+                    <td>{index + 1}</td>
+                    <td>{todo.todoText}</td>
+                    <td>{new Date(todo.createdAt).toLocaleString()}</td>
+                    <td>
+                      <div className="action_icons">
+                        <AiFillEdit onClick={() => handleEdit(todo)} />
+                        <AiTwotoneDelete onClick={() => deleteTask(todo.id)} />
+                        <IoCheckmarkDoneCircleSharp
+                            style={todo.completed ? {color : "green"} : {}}
+                            onClick={ ()=> dispatch(completeTodo({id : todo.id, completed : !todo.completed})) }
+                         />
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </StyledTable>
+        </>
+      ) : (
+        <>
+          <ErrorMsgContainer color="orange">
+            <h1>No Task added yet, please add task</h1>
+          </ErrorMsgContainer>
+        </>
+      )}
     </>
   );
 };
@@ -79,6 +79,7 @@ const StyledTable = styled.table`
       background-color: #b2b2b2;
       cursor: pointer;
       text-align: center;
+      font-size : 1.1rem;
     }
     th {
       &:first-child {
@@ -101,23 +102,34 @@ const StyledTable = styled.table`
         padding: 14px 18px;
         border-top: 1px dashed rgba(90, 90, 90, 0.2);
         font-size: 14px;
+        &:nth-child(2) {
+          font-weight: 700;
+          font-size : 1rem;
+        }
       }
     }
-  }
-  .action_icons{
-    height : 1.2rem;
-    font-size : 1.5rem;
-    display : flex;
-    flex-direction : row;
-    justify-content : center;
-    align-items : center;
-    gap : 0.8rem;
+  };
+  .action_icons {
+    height: 1.2rem;
+    font-size: 1.5rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 0.8rem;
     svg {
-        cursor: pointer;
-        &:hover {
-            color : gray;
-        }
-    };
+      cursor: pointer;
+      &:hover {
+        color: gray;
+      }
+    }
+
+  }
+  .completed_todo {
+    color : green;
+  };
+  .notcompleted_todo{
+    color : black;
   }
 `;
 

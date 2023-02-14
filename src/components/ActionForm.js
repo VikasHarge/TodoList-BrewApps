@@ -18,17 +18,48 @@ const ActionForm = () => {
 
   const [todoText, setTodoText] = useState("");
   const [displayTodo, setDisplayTodos]=useState([])
-  const [searchBy, setSearchBy]= useState(null);
-  const [searchQry, setSearchQry] = useState('')
+
   const [editing, setEditing] = useState(false)
   const [editTodo, setEditTodo] = useState('')
   const [editTodoText, setEditTodoText] = useState('')
 
+  const [searchBy, setSearchBy]= useState(null);
+  const [searchQry, setSearchQry] = useState('')
+
 
 
   useEffect(()=>{
-    setDisplayTodos(todos);
-  },[todos])
+    if(searchBy === 'name'){
+        setDisplayTodos(()=>{
+            return todos.filter((todo)=>{
+                if(searchQry === ''){
+                    return todo
+                } else if (
+                    todo.todoText.toLowerCase().includes(searchQry.toLocaleLowerCase())
+                ){
+                    return todo;
+                }
+            })
+        })
+    }
+    if(searchBy === 'completed'){
+        setDisplayTodos(()=>{
+            return todos.filter((todo)=>{
+                return todo.completed === true
+            })
+        })
+    }
+    if(searchBy === 'pendig'){
+        setDisplayTodos(()=>{
+            return todos.filter((todo)=>{
+                return todo.completed === false
+            })
+        })
+    }
+    if(searchBy === null || searchBy === "" ){
+        setDisplayTodos(todos)
+    }
+  },[todos, searchQry, searchBy])
 
   const handleEdit = (todo)=>{
     setEditing(true);
@@ -100,7 +131,7 @@ const ActionForm = () => {
             <div className="search_todos" >
             <label htmlFor="search" >Search By</label>
             <select name="search" id="search" value={searchBy || ''} onChange={(e)=>setSearchBy(e.target.value)}  >
-                <option value='' >select...</option>
+                <option value="" >select...</option>
                 <option value='name'>Name</option>
                 <option value='completed'>Completed</option>
                 <option value='pendig'>Pending</option>
