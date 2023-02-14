@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import logo from './media/logos/logo.jpeg'
+import logo from '../media/logos/logo.jpeg'
 
 const Nav = () => {
   return (
@@ -20,6 +20,7 @@ const NavDiv = styled.div`
   box-shadow: -1px 4px 10px -8px rgba(0, 0, 0, 0.75);
 
   position : fixed;
+  top : 0;
   z-index : 9;
   width : 100%;
   height : 8vh;
